@@ -3,6 +3,7 @@ const { detect } = require('detect-browser');
 const browser = detect();
 
 const AudioContext = global.AudioContext || global.webkitAudioContext;
+let globalAudioContext = null
 const BUFFER_SIZE = 4096;
 
 /**
@@ -135,7 +136,8 @@ class OpusMediaRecorder extends EventTarget {
     // Get channel count and sampling rate
     // channelCount: https://www.w3.org/TR/mediacapture-streams/#media-track-settings
     // sampleRate: https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/sampleRate
-    this.context = new AudioContext();
+    globalAudioContext = globalAudioContext || new AudioContext();
+    this.context = globalAudioContext;
     let tracks = this.stream.getAudioTracks();
     if (!tracks[0]) {
       throw new Error('DOMException: UnkownError, media track not found.');
